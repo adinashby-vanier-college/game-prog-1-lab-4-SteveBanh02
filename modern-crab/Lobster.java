@@ -23,6 +23,34 @@ public class Lobster extends Actor
     public void act()
     {
         moveAround();
+        eat();
+        if (isGameLost()) {
+            transitionToGameOverWorld();
+        }
+        wormToLobster();
+    }
+
+    /**
+     * 
+     */
+    public boolean isGameLost()
+    {
+        World world = getWorld();
+        if (world.getObjects(Crab.class).isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 
+     */
+    public void transitionToGameOverWorld()
+    {
+        World gameOverWorld =  new  GameOverWorld();
+        Greenfoot.setWorld(gameOverWorld);
     }
 
     /**
@@ -36,6 +64,32 @@ public class Lobster extends Actor
         }
         if (isAtEdge()) {
             turn(180);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void eat()
+    {
+        Actor crab = getOneIntersectingObject(Crab.class);
+        if (crab != null) {
+            World world = getWorld();
+            world.removeObject(crab);
+            Greenfoot.playSound("mixkit-wolves-at-scary-forest-2485.wav");
+        }
+    }
+
+    /**
+     * 
+     */
+    public void wormToLobster()
+    {
+        Actor worm = getOneIntersectingObject(Worm.class);
+        if (worm != null) {
+            World world = getWorld();
+            world.removeObject(worm);
+            world.addObject( new  Lobster(), getX(), getY());
         }
     }
 }
